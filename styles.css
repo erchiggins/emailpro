@@ -1,0 +1,20 @@
+body {
+    background-image: url("assets/oj.jpg");
+    background-position: center center;
+    background-repeat: round;
+    background-attachment: fixed;
+}
+
+#top {
+    text-align: center;
+}
+
+.displayBox {
+    background-color: beige;
+    border-color: blue;
+    border-style: solid;
+    border-width: medium;
+    color: blue;
+    padding: 1%;
+    margin: 2%;
+}
