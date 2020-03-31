@@ -23,7 +23,25 @@ body {
     height: 100vh;
 }
 
+main {
+    height: 100%;
+    display: flex;
+}
+
+#mailText {
+    width: auto;
+    height: 350px;
+    line-height: 3em;
+    overflow-y: scroll;
+    padding: 5px;
+    border-style: solid;
+    border-color: greenyellow;
+    background-color: #4222be;
+    color: white;
+}
+
 .footer {
+    position: fixed;
     width: 100%;
     height: auto;
     line-height: auto;
@@ -62,4 +80,37 @@ HTML CSS Result EDIT ON .wordart {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+
+/* Style the buttons that are used to open and close the accordion panel */
+
+.accordion {
+    background-color: greenyellow;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+
+.active,
+.accordion:hover {
+    background-color: hotpink;
+}
+
+
+/* Style the accordion panel. Note: hidden by default */
+
+.panel {
+    padding: 0 18px;
+    background-color: purple;
+    display: none;
+    overflow: hidden;
 }
