@@ -1,0 +1,67 @@
+#top {
+    text-align: center;
+}
+
+.displayBox {
+    background-color: beige;
+    border-color: blue;
+    border-style: solid;
+    border-width: medium;
+    color: blue;
+    padding: 15px;
+    margin: 2%;
+}
+
+body {
+    height: 100vh;
+}
+
+main {
+    height: 100%;
+    display: flex;
+}
+
+#selectedTopics {
+    text-align: right;
+}
+
+#content {
+    width: auto;
+    height: auto;
+    line-height: 2em;
+    overflow-y: scroll;
+    padding: 10px;
+    border-style: solid;
+    border-color: blue;
+    background-color: white;
+    color: black;
+}
+
+.footer {
+    position: fixed;
+    width: 100%;
+    height: auto;
+    line-height: auto;
+    margin-top: auto;
+    margin-bottom: 0;
+    padding: 1%;
+}
+
+.accordionButton {
+    text-align: left;
+    transition: 0.4s;
+}
+
+.active,
+.accordionButton:hover {
+    background-color: darkgray;
+}
+
+
+/* Style the accordion panel. Note: hidden by default */
+
+.panel {
+    padding: 5px;
+    display: none;
+    overflow: hidden;
+}

@@ -61,6 +61,9 @@ HTML CSS Result EDIT ON .wordart {
     -moz-osx-font-smoothing: grayscale;
 }
 
+
+/* https://www.designpieces.com/2017/03/wordart-css3-text-effects/ */
+
 .wordart.purple .text {
     text-align: center;
     font-size: 2em;
