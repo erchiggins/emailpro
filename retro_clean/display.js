@@ -9,7 +9,10 @@ window.onload = function() {
             return response.json();
         }).then((data) => {
             archive = data;
+            console.log(archive);
             updateArchive();
+        }).catch(err => {
+            console.log(err);
         });
     addCopyLinkAction();
 }
@@ -43,16 +46,18 @@ function updateArchive() {
             month = mList[m];
             const newMonth = buildAccordionPanel(archiveYear.year, month.name);
             newYear.lastChild.appendChild(newMonth);
-            const newUl = document.createElement("ul");
-            newMonth.lastChild.appendChild(newUl);
+            const newDiv = document.createElement("div");
+            newMonth.lastChild.appendChild(newDiv);
             pList = month.posts;
             numInYear += pList.length;
             for (p in pList) {
-                const archiveLink = document.createElement("li");
+                const archiveLink = document.createElement("a");
                 archiveLink.className = "archiveLink";
-                archiveLink.innerText = pList[p].day;
+                archiveLink.href = `#${pList[p].subject.replace(/ /g, "-")}`;
+                archiveLink.innerText = `${pList[p].day} - ${pList[p].subject}`;
                 archiveLink.id = pList[p].timestamp;
-                newUl.appendChild(archiveLink);
+                newDiv.appendChild(archiveLink);
+                newDiv.appendChild(document.createElement("br"));
             }
             updatePanelCount(archiveYear.year + month.name, pList.length);
         }

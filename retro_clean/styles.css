@@ -25,20 +25,26 @@ main {
     text-align: right;
 }
 
-#dummy {
-    display: none;
-}
-
 #content {
     width: auto;
-    height: auto;
+    height: 350px;
     line-height: 2em;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 10px;
     border-style: solid;
     border-color: blue;
     background-color: white;
     color: black;
+}
+
+#years {
+    max-height: 470px;
+    overflow-y: auto;
+}
+
+.accordion>p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .footer {
