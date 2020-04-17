@@ -18,12 +18,10 @@ function selectMail() {
     // TODO strip off hash before searching/setting selectedMail
     // deal with snake casing
     if (location.hash) {
-        console.log(`selecting email with subj ${location.hash}`)
         selectedMail = {
             subject: location.hash
         }
     } else {
-        console.log("selecting a random email and setting as selectedmail")
         selectedMail = {
             timestamp: 1554091200000,
             subject: "remembering st patricks day"
@@ -36,15 +34,19 @@ function updateArchive() {
 
     const yearsDiv = document.getElementById("years");
     for (y in archive.years) {
-        const newYear = buildAccordionPanel(archive.years[y].year);
+        archiveYear = archive.years[y];
+        mList = archiveYear.months;
+        let numInYear = 0;
+        const newYear = buildAccordionPanel(archiveYear.year, "");
         yearsDiv.appendChild(newYear);
-        mList = archive.years[y].months;
         for (m in mList) {
-            const newMonth = buildAccordionPanel(mList[m].name);
+            month = mList[m];
+            const newMonth = buildAccordionPanel(archiveYear.year, month.name);
             newYear.lastChild.appendChild(newMonth);
             const newUl = document.createElement("ul");
             newMonth.lastChild.appendChild(newUl);
-            pList = mList[m].posts;
+            pList = month.posts;
+            numInYear += pList.length;
             for (p in pList) {
                 const archiveLink = document.createElement("li");
                 archiveLink.className = "archiveLink";
@@ -52,20 +54,30 @@ function updateArchive() {
                 archiveLink.id = pList[p].timestamp;
                 newUl.appendChild(archiveLink);
             }
-
+            updatePanelCount(archiveYear.year + month.name, pList.length);
         }
+        updatePanelCount(archiveYear.year, numInYear);
     }
 
     applyAccordionListener();
 
 }
 
-function buildAccordionPanel(title) {
+function buildAccordionPanel(year, month) {
     const newAccordionPanel = document.createElement("div");
     newAccordionPanel.className = "accordion";
     const para = document.createElement("p");
+    if (month) {
+        para.id = year + month;
+    } else {
+        para.id = year;
+    }
     const button = document.createElement("button");
-    button.innerText = title;
+    if (month) {
+        button.innerText = month;
+    } else {
+        button.innerText = year;
+    }
     button.className = "accordionButton";
     para.appendChild(button);
     newAccordionPanel.appendChild(para);
@@ -73,6 +85,13 @@ function buildAccordionPanel(title) {
     panel.className = "panel";
     newAccordionPanel.appendChild(panel);
     return newAccordionPanel;
+}
+
+function updatePanelCount(id, count) {
+    const para = document.getElementById(id);
+    const span = document.createElement("span");
+    span.innerText = `  (${count})`
+    para.appendChild(span);
 }
 
 function applyAccordionListener() {

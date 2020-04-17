@@ -61,11 +61,8 @@ main {
     background-color: darkgray;
 }
 
-
-/* Style the accordion panel. Note: hidden by default */
-
 .panel {
-    padding: 5px;
+    padding-left: 15px;
     display: none;
     overflow: hidden;
 }
