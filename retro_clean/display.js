@@ -3,6 +3,7 @@ let archive = {}
 let selectedMail = {}
 
 window.onload = function() {
+    selectMail();
     fetch(archiveUrl)
         .then(response => {
             return response.json();
@@ -10,7 +11,25 @@ window.onload = function() {
             archive = data;
             updateArchive();
         });
-    // use location hash to decide which email to display 
+    addCopyLinkAction();
+}
+
+function selectMail() {
+    // TODO strip off hash before searching/setting selectedMail
+    // deal with snake casing
+    if (location.hash) {
+        console.log(`selecting email with subj ${location.hash}`)
+        selectedMail = {
+            subject: location.hash
+        }
+    } else {
+        console.log("selecting a random email and setting as selectedmail")
+        selectedMail = {
+            timestamp: 1554091200000,
+            subject: "remembering st patricks day"
+        }
+        location.hash = selectedMail.subject.replace(/ /g, '-');
+    }
 }
 
 function updateArchive() {
@@ -79,4 +98,16 @@ function applyArchiveListener() {
     //use location.hash
     // when clicked change color 
     // use archiveDate class
+}
+
+function addCopyLinkAction() {
+    document.getElementById("copyLink").addEventListener("click", function() {
+        let dummy = document.createElement('input'),
+            text = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+    });
 }

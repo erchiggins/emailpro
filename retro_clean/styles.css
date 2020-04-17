@@ -21,8 +21,12 @@ main {
     display: flex;
 }
 
-#selectedTopics {
+#subheading {
     text-align: right;
+}
+
+#dummy {
+    display: none;
 }
 
 #content {
