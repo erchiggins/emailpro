@@ -111,8 +111,10 @@ function applyAccordionListener() {
             var panel = acc[i].lastChild;
             if (panel.style.display === "block") {
                 panel.style.display = "none";
+                acc[i].firstChild.lastChild.style.display = "inline";
             } else {
                 panel.style.display = "block";
+                acc[i].firstChild.lastChild.style.display = "none";
             }
         });
     }
