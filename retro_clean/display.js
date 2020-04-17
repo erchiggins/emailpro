@@ -9,10 +9,7 @@ window.onload = function() {
             return response.json();
         }).then((data) => {
             archive = data;
-            console.log(archive);
             updateArchive();
-        }).catch(err => {
-            console.log(err);
         });
     addCopyLinkAction();
 }
