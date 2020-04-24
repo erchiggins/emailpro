@@ -56,9 +56,9 @@ function updateArchive() {
                 newDiv.appendChild(archiveLink);
                 newDiv.appendChild(document.createElement("br"));
             }
-            updatePanelCount(archiveYear.year + month.name, pList.length);
+            // updatePanelCount(archiveYear.year + month.name, pList.length);
         }
-        updatePanelCount(archiveYear.year, numInYear);
+        // updatePanelCount(archiveYear.year, numInYear);
     }
 
     applyAccordionListener();
@@ -108,10 +108,10 @@ function applyAccordionListener() {
             var panel = acc[i].lastChild;
             if (panel.style.display === "block") {
                 panel.style.display = "none";
-                acc[i].firstChild.lastChild.style.display = "inline";
+                // acc[i].firstChild.lastChild.style.display = "inline";
             } else {
                 panel.style.display = "block";
-                acc[i].firstChild.lastChild.style.display = "none";
+                // acc[i].firstChild.lastChild.style.display = "none";
             }
         });
     }
