@@ -6,13 +6,14 @@ exports.handler = async(event) => {
     const message = JSON.parse(rawMessage);
     const mail = message.mail;
     const sender = mail.source;
-    if (sender === process.env.valid_sender) {
+    if (sender === process.env.valid_sender_0 || sender === process.env.valid_sender_1) {
         let subject = mail.commonHeaders.subject;
         while (subject.substring(0, 5) === 'Fwd: ') {
             subject = subject.substring(5);
         }
         const rawContent = message.content;
         const content = decode(rawContent);
+        console.log(content);
         const item = {
             "timestamp": { S: content.date.timestamp },
             "subject": { S: subject },
@@ -28,7 +29,7 @@ exports.handler = async(event) => {
             "day": { N: content.date.day + '' }
         };
         const saveparams = {
-            TableName: "TestMail",
+            TableName: "EmailProMessages",
             Item: item,
             ReturnConsumedCapacity: "TOTAL"
         };
@@ -40,7 +41,7 @@ exports.handler = async(event) => {
             }
         }).promise();
         const archiveparams = {
-            TableName: "TestArchive",
+            TableName: "EmailProArchive",
             Item: archiveItem,
             ReturnConsumedCapacity: "TOTAL"
         };
@@ -51,7 +52,28 @@ exports.handler = async(event) => {
                 console.log(data);
             }
         }).promise();
-        // add topics table
+        for (let topic in content.topics) {
+            const topicparams = {
+                TableName: "EmailProTopics",
+                Key: {
+                    "topicname": {
+                        S: content.topics[topic]
+                    }
+                },
+                UpdateExpression: "ADD emails :attrValue",
+                ExpressionAttributeValues: {
+                    ":attrValue": { "SS": [subject] }
+                },
+                ReturnConsumedCapacity: "TOTAL"
+            };
+            const updatedtopic = await ddb.updateItem(topicparams, function(err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(data);
+                }
+            }).promise();
+        }
     } else {
         return 'unrecognized sender';
     }
@@ -68,7 +90,8 @@ function decode(content) {
             timestamp: ""
         },
         plaintext: new Set(),
-        markdown: ""
+        markdown: "",
+        topics: []
     };
     let boundary = "";
     let boundaryCount = 0;
@@ -95,9 +118,10 @@ function decode(content) {
     // counter for plaintext lines
     let p0 = Number(marks.plainStart) + 8;
     let p1 = Number(marks.markStart);
+    // strip out fwd blocks and harvest indivdual words from plaintext body
     for (let p = p0; p < p1; p++) {
         if (lines[p].trim() === '---------- Forwarded message ---------') {
-            p += 4;
+            p += 5;
         } else {
             let textArray = lines[p].trim().split(' ');
             for (let t in textArray) {
@@ -117,36 +141,52 @@ function decode(content) {
             mdLine = mdLine.replace(/\r/, '');
         }
         mdString += mdLine;
-
     }
     mdString = mdString.replace(/=C2/g, ' ');
     mdString = mdString.replace(/=A0/g, ' ');
     mdString = mdString.replace(/=C2=A0/g, ' ');
     mdString = mdString.replace(/=20/g, ' ');
     mdString = mdString.replace(/=E2=80=93/g, '-');
+    mdString = mdString.replace(/=E2=80=99/g, "'");
+    mdString = mdString.replace(/=E2=80=9C/g, '');
+    mdString = mdString.replace(/=E2=80=9D/g, '');
     mdString = mdString.replace(/=([0-9a-fA-F]{2})/g, (stringmatched, encoded) => {
         const intval = parseInt(encoded, 16);
         return String.fromCharCode(intval);
     });
     let timesent = "";
     let body = "";
-    if (mdString.includes('<div dir="ltr"')) {
-        // indicates that message contains forwarded blocks
-        let chunks = mdString.split('<div dir="ltr"');
-        console.log(chunks);
-        timesent = chunks[chunks.length - 2];
-        const dateIndex = timesent.indexOf('<br>Date: ');
-        const subjIndex = timesent.indexOf('<br>Subject: ');
-        timesent = timesent.substring(dateIndex + 10, subjIndex);
-        body = chunks[chunks.length - 1].substring(0, mdString.length - ((chunks.length - 1) * 6));
+    if (mdString.includes('---------- Forwarded message ---------')) {
+        let chunks = mdString.split('---------- Forwarded message ---------');
+        let timechunk = chunks[chunks.length - 1];
+        const dateIndex = timechunk.indexOf('<br>Date: ');
+        const subjIndex = timechunk.indexOf('<br>Subject: ');
+        timesent = timechunk.substring(dateIndex + 10, subjIndex);
+        const startBody = timechunk.indexOf('<div dir="ltr">');
+        body = timechunk.substring(startBody, mdString.length - ((chunks.length - 1) * 6));
     } else {
         timesent = lines[marks.plainStart - 6];
-        console.log(timesent);
         timesent = timesent.substring(6);
         body = mdString;
     }
     toReturn.date = processDate(timesent);
     toReturn.markdown = body;
+    // extract topics
+    let stepsback = 0;
+    let hitContent = false;
+    while (!hitContent) {
+        let line = lines[marks.markStart - 1 - stepsback];
+        if (line.length > 1) {
+            hitContent = true;
+            if (line.substring(0, 8) === 'topics: ') {
+                const tlist = line.substring(8).split(',');
+                for (let t in tlist) {
+                    toReturn.topics.push(tlist[t].trim());
+                }
+            }
+        }
+        stepsback += 1;
+    }
     return toReturn;
 }
 
@@ -178,11 +218,13 @@ function processDate(timestring) {
     let month, day, hour, minute;
     if (dateParts[1] in months) {
         month = months[dateParts[1]];
+        timetoreturn.month = dateParts[1];
         day = parseInt(dateParts[2].substring(0, dateParts[2].length - 1));
         hour = parseInt(dateParts[5]) + ((dateParts[7] === 'PM') ? 12 : 0);
         minute = parseInt(dateParts[6]);
     } else {
         month = months[dateParts[2]];
+        timetoreturn.month = dateParts[2];
         day = parseInt(dateParts[1]);
         hour = parseInt(dateParts[4]);
         minute = parseInt(dateParts[5].substring(0, 2));
@@ -195,7 +237,6 @@ function processDate(timestring) {
     date.setMinutes(minute);
     timetoreturn.timestamp = date.getTime() + "";
     timetoreturn.year = year;
-    timetoreturn.month = dateParts[2];
     timetoreturn.day = day;
     return timetoreturn;
 }
