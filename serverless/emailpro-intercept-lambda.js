@@ -19,13 +19,13 @@ exports.handler = async(event) => {
             "subject": { S: subject },
             "sender": { S: sender },
             "plaintext": { SS: Array.from(content.plaintext) },
-            "markdown": { S: content.markdown }
+            "markdown": { S: '' + content.markdown }
         };
         const archiveItem = {
             "timestamp": { S: content.date.timestamp },
             "subject": { S: subject },
             "year": { N: content.date.year + '' },
-            "month": { S: content.date.month },
+            "month": { N: content.date.month + '' },
             "day": { N: content.date.day + '' }
         };
         const saveparams = {
@@ -145,8 +145,10 @@ function decode(content) {
     mdString = mdString.replace(/=C2/g, ' ');
     mdString = mdString.replace(/=A0/g, ' ');
     mdString = mdString.replace(/=C2=A0/g, ' ');
+    mdString = mdString.replace(/=C3=A9/g, '&#233;')
     mdString = mdString.replace(/=20/g, ' ');
     mdString = mdString.replace(/=E2=80=93/g, '-');
+    mdString = mdString.replace(/=E2=80=94/g, '');
     mdString = mdString.replace(/=E2=80=99/g, "'");
     mdString = mdString.replace(/=E2=80=9C/g, '');
     mdString = mdString.replace(/=E2=80=9D/g, '');
@@ -193,7 +195,7 @@ function decode(content) {
 function processDate(timestring) {
     let timetoreturn = {
         year: 0,
-        month: "",
+        month: 0,
         day: 0,
         timestamp: ""
     }
@@ -218,13 +220,13 @@ function processDate(timestring) {
     let month, day, hour, minute;
     if (dateParts[1] in months) {
         month = months[dateParts[1]];
-        timetoreturn.month = dateParts[1];
+        timetoreturn.month = months[dateParts[1]];
         day = parseInt(dateParts[2].substring(0, dateParts[2].length - 1));
         hour = parseInt(dateParts[5]) + ((dateParts[7] === 'PM') ? 12 : 0);
         minute = parseInt(dateParts[6]);
     } else {
         month = months[dateParts[2]];
-        timetoreturn.month = dateParts[2];
+        timetoreturn.month = months[dateParts[2]];
         day = parseInt(dateParts[1]);
         hour = parseInt(dateParts[4]);
         minute = parseInt(dateParts[5].substring(0, 2));
