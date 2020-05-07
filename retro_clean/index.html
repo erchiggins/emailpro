@@ -20,34 +20,18 @@
         </header>
         <div class="row" id="middle">
             <div id="selectedMail" class="col-sm col-md displayBox">
-                <h5>Date: <em id="date">April 1, 2019</em></h5>
-                <h5>Subj: <em id="subj">remembering st patricks day</em></h5>
-                <div id="subheading"><span id="selectedTopics"><em>holidays</em>, <em>lifestyle</em>, <em>DST</em></span> ... <span><button id="copyLink">copy link</button></span></div>
+                <h5>Date: <em id="date"></em></h5>
+                <h5>Subj: <em id="subj"></em></h5>
+                <div id="subheading"><span id="selectedTopics"></span><span> ... <button id="copyLink">copy link</button></span></div>
                 <br>
                 <div id="content">
-                    <div dir=3D "ltr">this year, st. patricks day was sunday, march 24, 2017.
-                        <font size=3D "4">did you know</font>
-                        <div>
-                            <ul>
-                                <li>st. patricks day is also known as World Poetry Day</li>
-                            </ul>hahaha my favorite memory of st. patricks day is when all the children of the world join hands and a terrible laser shoots out of the sun, killing daylight savings time<br>
-                            <div><br></div>
-                            <div>every year i think &quot;maybe now we're safe from DST&quot;</div>
-                            <div><br></div>
-                            <div>unfortunately DST is indestructible, much like the rich asbestos deposits that i had installed all over my . body</div>
-                            <div><br></div>
-                            <div>choices,</div>
-                            <div><br></div>
-                            <div>ivan</div>
-                        </div>
-                    </div>
                 </div>
                 <br>
-                <span><button>|<</button></span>
-                <span><button><</button></span>
-                <span><button>random</button></span>
-                <span><button>></button></span>
-                <span><button>>|</button></span>
+                <span><button onclick="jumpTime('start')">|<</button></span>
+                <span><button onclick="jumpTime(-1)"><</button></span>
+                <span><button onclick="jumpTime()">random</button></span>
+                <span><button onclick="jumpTime(1)">></button></span>
+                <span><button onclick="jumpTime('end')">>|</button></span>
             </div>
             <div id="archive" class="col-sm-3 col-md-3 col-lg-2 displayBox">
                 <span><h3>ARCHIVE</h3></span>

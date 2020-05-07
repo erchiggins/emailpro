@@ -80,3 +80,7 @@ span>.panel>p {
     display: none;
     overflow: hidden;
 }
+
+span>em {
+    margin-left: 10px;
+}

@@ -1,8 +1,15 @@
 let archiveUrl = "https://zg6gt7krsj.execute-api.us-east-1.amazonaws.com/prod/";
+// chronological order of emails for archive pane
 let archive = {};
+// chronological order of emails for toggling main view
 let timeline = [];
+// index in timeline of email currently selected
+let timelinePos = 0;
+// currently selected email
 let selectedMail = {};
+// utility for parsing and displaying dates
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+// alphabetically arranged email topics
 let topics = [];
 
 window.onload = function() {
@@ -44,17 +51,59 @@ window.onload = function() {
 
 function selectMail() {
     if (location.hash) {
-        selectedMail = {
-            subject: decodeURI(location.hash.substring(1))
-        }
+        fetchMailBySubject(location.hash.substring(1));
     } else {
-        selectedMail = {
-            timestamp: 1554091200000,
-            subject: "remembering st patricks day"
-        }
-        location.hash = encodeURI(selectedMail.subject);
+        jumpTime();
     }
-    document.title = selectedMail.subject;
+}
+
+function jumpTime(destination) {
+    let index;
+    if (destination === 1) {
+        index = (timelinePos < timeline.length - 1) ? timelinePos + 1 : timeline.length - 1;
+    } else if (destination === -1) {
+        index = (timeline > 1) ? timelinePos - 1 : 0;
+    } else if (destination === "start") {
+        index = 0;
+    } else if (destination === "end") {
+        index = timeline.length - 1;
+    } else {
+        index = Math.floor(Math.random() * timeline.length);
+    }
+    fetchMailBySubject(timeline[index].subject);
+    timelinePos = index;
+}
+
+async function fetchMailBySubject(subject) {
+    fetch(`${archiveUrl}archive/${subject}`)
+        .then(response => {
+            return response.json();
+        }).then(data => {
+            document.title = data.subject;
+            selectedMail = data;
+            updateSelected();
+        }).catch(error => {
+            console.log(error);
+            document.title = "Welcome to Email Pro";
+            // TODO: error message
+            return null;
+        });
+}
+
+function updateSelected() {
+    location.hash = encodeURI(selectedMail.subject);
+    document.getElementById("subj").innerText = selectedMail.subject;
+    document.getElementById("content").innerHTML = selectedMail.markdown;
+    const date = new Date(parseInt(selectedMail.timestamp));
+    document.getElementById("date").innerText = `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+    const sTopics = topics.filter(t => t.emails.includes(selectedMail.subject));
+    const sTSpan = document.getElementById("selectedTopics");
+    sTSpan.innerHTML = "";
+    for (st of sTopics) {
+        const newEm = document.createElement("em");
+        newEm.innerText = st.name;
+        sTSpan.appendChild(newEm);
+    }
 }
 
 function updateArchive() {
