@@ -39,11 +39,10 @@ window.onload = function() {
                 updateTopics();
             })
     }
+    applyAccordionListener();
 }
 
 function selectMail() {
-    // TODO strip off hash before searching/setting selectedMail
-    // deal with snake casing
     if (location.hash) {
         selectedMail = {
             subject: decodeURI(location.hash.substring(1))
@@ -65,11 +64,11 @@ function updateArchive() {
         archiveYear = archive.years[y];
         mList = archiveYear.months;
         // let numInYear = 0;
-        const newYear = buildAccordionPanel(archiveYear.year, "");
+        const newYear = buildArchivePanel(archiveYear.year, "");
         yearsDiv.appendChild(newYear);
         for (m in mList) {
             month = mList[m];
-            const newMonth = buildAccordionPanel(archiveYear.year, month.month);
+            const newMonth = buildArchivePanel(archiveYear.year, month.month);
             newYear.lastChild.appendChild(newMonth);
             const newDiv = document.createElement("div");
             newMonth.lastChild.appendChild(newDiv);
@@ -77,11 +76,7 @@ function updateArchive() {
             // numInYear += eList.length;
             for (e in eList) {
                 timeline.push({ subject: eList[e].subject, timestamp: eList[e].timestamp });
-                const archiveLink = document.createElement("a");
-                archiveLink.className = "archiveLink";
-                archiveLink.href = `#${eList[e].subject.replace(/ /g, "-")}`;
-                archiveLink.innerText = `${eList[e].day} - ${eList[e].subject}`;
-                archiveLink.id = eList[e].subject;
+                const archiveLink = buildLink(`#${encodeURI(eList[e].subject)}`, `${eList[e].day} - ${eList[e].subject}`);
                 newDiv.appendChild(archiveLink);
                 newDiv.appendChild(document.createElement("br"));
             }
@@ -90,13 +85,11 @@ function updateArchive() {
         // updatePanelCount(archiveYear.year, numInYear);
     }
 
-    applyAccordionListener();
-
 }
 
-function buildAccordionPanel(year, month) {
-    const newAccordionPanel = document.createElement("div");
-    newAccordionPanel.className = "accordion";
+function buildArchivePanel(year, month) {
+    const newPanel = document.createElement("div");
+    newPanel.className = "accordion";
     const para = document.createElement("p");
     if (month) {
         para.id = year + month;
@@ -111,11 +104,11 @@ function buildAccordionPanel(year, month) {
     }
     button.className = "accordionButton";
     para.appendChild(button);
-    newAccordionPanel.appendChild(para);
+    newPanel.appendChild(para);
     const panel = document.createElement("div");
     panel.className = "panel";
-    newAccordionPanel.appendChild(panel);
-    return newAccordionPanel;
+    newPanel.appendChild(panel);
+    return newPanel;
 }
 
 function updatePanelCount(id, count) {
@@ -146,6 +139,17 @@ function applyAccordionListener() {
     }
 }
 
+function buildLink(target, text) {
+    const link = document.createElement("a");
+    link.href = target;
+    link.innerText = text;
+    link.onclick = function() {
+        location.hash = link.hash;
+        selectMail();
+    };
+    return link;
+}
+
 function addCopyLinkAction() {
     document.getElementById("copyLink").addEventListener("click", function() {
         let dummy = document.createElement('input'),
@@ -161,8 +165,26 @@ function addCopyLinkAction() {
 function updateTopics() {
     const topicsDiv = document.getElementById("topicCloud");
     for (let t of topics) {
-        const button = document.createElement("button");
-        button.innerText = t.name;
-        topicsDiv.appendChild(button);
+        const tSpan = document.createElement("span");
+        tSpan.className = "accordion";
+        tbSpan = document.createElement("span");
+        const tButton = document.createElement("button");
+        tButton.className = "accordionButton";
+        tButton.innerText = t.name;
+        tbSpan.appendChild(tButton);
+        tSpan.appendChild(tbSpan);
+        buildTopicPanel(t, tSpan);
+        topicsDiv.appendChild(tSpan);
     }
+}
+
+function buildTopicPanel(topic, parent) {
+    const newPanel = document.createElement("div");
+    newPanel.className = "panel";
+    for (email of topic.emails) {
+        const newPara = document.createElement("p");
+        newPara.appendChild(buildLink(`#${encodeURI(email)}`, email));
+        newPanel.appendChild(newPara);
+    }
+    parent.appendChild(newPanel);
 }

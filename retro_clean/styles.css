@@ -62,6 +62,14 @@ main {
     transition: 0.4s;
 }
 
+span>.accordionButton {
+    margin: 5px;
+}
+
+span>.panel>p {
+    margin: 0;
+}
+
 .active,
 .accordionButton:hover {
     background-color: darkgray;
