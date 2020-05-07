@@ -27,26 +27,32 @@ window.onload = function() {
                 archive = data;
                 sessionStorage.setItem('archive', JSON.stringify(archive));
                 updateArchive();
+                applyAccordionListener();
                 selectMail();
             });
     }
     addCopyLinkAction();
     const sessionTopics = sessionStorage.getItem('topics');
-    if (sessionTopics) {
+    console.log(sessionTopics.length);
+    if (sessionTopics.length > 2) {
         // access cached topics, if they exist
         topics = JSON.parse(sessionTopics);
         updateTopics();
+        applyAccordionListener();
     } else {
         fetch(archiveUrl + 'topics')
             .then(response => {
                 return response.json();
             }).then(data => {
+                console.log(data);
                 topics = data;
-                this.sessionStorage.setItem('topics', JSON.stringify(topics));
+                sessionStorage.setItem('topics', JSON.stringify(topics));
                 updateTopics();
-            })
+                applyAccordionListener();
+            }).catch(error => {
+                console.log(error);
+            });
     }
-    applyAccordionListener();
 }
 
 function selectMail() {
@@ -225,6 +231,9 @@ function updateTopics() {
         buildTopicPanel(t, tSpan);
         topicsDiv.appendChild(tSpan);
     }
+    const sTopics = topics.filter((t) => {
+        t.emails.includes(selectedMail.subject)
+    });
 }
 
 function buildTopicPanel(topic, parent) {
