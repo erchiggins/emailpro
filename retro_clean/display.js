@@ -32,11 +32,10 @@ window.onload = function() {
             });
     }
     addCopyLinkAction();
-    const sessionTopics = sessionStorage.getItem('topics');
-    console.log(sessionTopics.length);
-    if (sessionTopics.length > 2) {
+    const sessionTopics = JSON.parse(sessionStorage.getItem('topics'));
+    if (sessionTopics) {
         // access cached topics, if they exist
-        topics = JSON.parse(sessionTopics);
+        topics = sessionTopics;
         updateTopics();
         applyAccordionListener();
     } else {
@@ -44,14 +43,12 @@ window.onload = function() {
             .then(response => {
                 return response.json();
             }).then(data => {
-                console.log(data);
                 topics = data;
                 sessionStorage.setItem('topics', JSON.stringify(topics));
                 updateTopics();
                 applyAccordionListener();
-            }).catch(error => {
-                console.log(error);
-            });
+            })
+            // todo log error
     }
 }
 
@@ -65,10 +62,10 @@ function selectMail() {
 
 function jumpTime(destination) {
     let index;
-    if (destination === 1) {
-        index = (timelinePos < timeline.length - 1) ? timelinePos + 1 : timeline.length - 1;
-    } else if (destination === -1) {
-        index = (timeline > 1) ? timelinePos - 1 : 0;
+    if (destination === "forward") {
+        index = (parseInt(timelinePos) < timeline.length - 1) ? parseInt(timelinePos) + 1 : timeline.length - 1;
+    } else if (destination === "back") {
+        index = (timelinePos > 1) ? timelinePos - 1 : 0;
     } else if (destination === "start") {
         index = 0;
     } else if (destination === "end") {
@@ -77,7 +74,6 @@ function jumpTime(destination) {
         index = Math.floor(Math.random() * timeline.length);
     }
     fetchMailBySubject(timeline[index].subject);
-    timelinePos = index;
 }
 
 async function fetchMailBySubject(subject) {
@@ -87,21 +83,29 @@ async function fetchMailBySubject(subject) {
         }).then(data => {
             document.title = data.subject;
             selectedMail = data;
-            updateSelected();
+            updateSelectedMail();
+            updateSelectedTopics();
+            for (let i in timeline) {
+                if (timeline[i].subject === selectedMail.subject) {
+                    timelinePos = i;
+                }
+            }
         }).catch(error => {
-            console.log(error);
             document.title = "Welcome to Email Pro";
             // TODO: error message
             return null;
         });
 }
 
-function updateSelected() {
+function updateSelectedMail() {
     location.hash = encodeURI(selectedMail.subject);
     document.getElementById("subj").innerText = selectedMail.subject;
     document.getElementById("content").innerHTML = selectedMail.markdown;
     const date = new Date(parseInt(selectedMail.timestamp));
     document.getElementById("date").innerText = `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+}
+
+function updateSelectedTopics() {
     const sTopics = topics.filter(t => t.emails.includes(selectedMail.subject));
     const sTSpan = document.getElementById("selectedTopics");
     sTSpan.innerHTML = "";
