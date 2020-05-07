@@ -46,15 +46,16 @@ function selectMail() {
     // deal with snake casing
     if (location.hash) {
         selectedMail = {
-            subject: location.hash
+            subject: decodeURI(location.hash.substring(1))
         }
     } else {
         selectedMail = {
             timestamp: 1554091200000,
             subject: "remembering st patricks day"
         }
-        location.hash = selectedMail.subject.replace(/ /g, '-');
+        location.hash = encodeURI(selectedMail.subject);
     }
+    document.title = selectedMail.subject;
 }
 
 function updateArchive() {
