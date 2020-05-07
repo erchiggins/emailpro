@@ -15,7 +15,10 @@ exports.handler = async(event) => {
     }
     const response = {
         statusCode: responseStatus,
-        body: responseBody
+        headers: {
+            "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify(responseBody)
     };
     return response;
 };
@@ -90,6 +93,27 @@ function composeArchiveResponse(data) {
 
 async function retrieveTopics() {
     let toReturn = null;
-
+    const params = {
+        TableName: "EmailProTopics"
+    }
+    const result = await ddb.scan(params, function(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            toReturn = composeTopicsResponse(data);
+        }
+    }).promise();
     return toReturn;
+}
+
+function composeTopicsResponse(data) {
+    let topics = [];
+    for (let item of data.Items) {
+        topics.push({
+            name: item.topicname.S,
+            emails: item.emails.SS
+        });
+    }
+    topics.sort((t0, t1) => (t0.name > t1.name) ? 1 : -1);
+    return topics;
 }
