@@ -4,13 +4,17 @@ const ddb = new AWS.DynamoDB();
 exports.handler = async(event) => {
     let responseStatus = 200;
     let responseBody = "";
-    const resource = event.resource.substring(1);
+    const resource = event.resource;
 
-    if (resource === 'archive') {
-        responseBody = await retrieveArchive();
+    if (resource.substring(1, 8) === 'archive') {
+        const subject = decodeURI(event.pathParameters.subject);
+        responseBody = await retrieveArchive(subject);
     } else if (resource === 'topics') {
         responseBody = await retrieveTopics();
     } else {
+        responseStatus = 400;
+    }
+    if (!responseBody) {
         responseStatus = 400;
     }
     const response = {
@@ -25,16 +29,40 @@ exports.handler = async(event) => {
 
 async function retrieveArchive(subject) {
     let toReturn = null;
-    const params = {
-        TableName: "EmailProArchive"
-    }
-    const result = await ddb.scan(params, function(err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-            toReturn = composeArchiveResponse(data);
+    if (subject) {
+        const params = {
+            Key: {
+                "subject": {
+                    S: subject
+                }
+            },
+            TableName: "EmailProMessages"
         }
-    }).promise();
+        const result = await ddb.getItem(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (data.Item) {
+                    toReturn = {
+                        subject: subject,
+                        timestamp: data.Item.timestamp.S,
+                        markdown: data.Item.markdown.S
+                    }
+                }
+            }
+        }).promise();
+    } else {
+        const params = {
+            TableName: "EmailProArchive"
+        }
+        const result = await ddb.scan(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                toReturn = composeArchiveResponse(data);
+            }
+        }).promise();
+    }
     return toReturn;
 }
 
