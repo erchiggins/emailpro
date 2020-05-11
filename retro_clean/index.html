@@ -18,11 +18,19 @@
                 <p><em>"I send you emails, then it's your problem"</em></p>
             </div>
         </header>
+        <nav class="row">
+            <div class="col displayBox">
+                <button onclick="document.location = 'index.html'">EMAILS</button>
+                <button onclick="document.location = 'about.html'">ABOUT EMAIL PRO / LIVE SHOWS</button>
+                <button><a href="https://goo.gl/forms/1firTEmhwuppdR6G3" target="_blank">RECEIVE EMAIL</a></button>
+            </div>
+        </nav>
         <div class="row" id="middle">
             <div id="selectedMail" class="col-sm col-md displayBox">
+                <h4>Subj: <em id="subj"></em></h4>
                 <h5>Date: <em id="date"></em></h5>
-                <h5>Subj: <em id="subj"></em></h5>
-                <div id="subheading"><span id="selectedTopics"></span><span> ... <button id="copyLink">copy link</button></span></div>
+                <span><button id="copyLink">copy link to this email</button></span>
+                <div id="subheading"><span id="selectedTopics"></span></div>
                 <br>
                 <div id="content">
                 </div>
@@ -47,15 +55,6 @@
                 </div>
             </div>
         </div>
-        <footer class="row">
-            <div class="col displayBox">
-                <button onclick="document.location = 'index.html'">EMAILS</button>
-                <button onclick="document.location = 'about.html#about'">ABOUT</button>
-                <button onclick="document.location = 'about.html#contact'">CONTACT</button>
-                <button onclick="document.location = 'about.html#shows'">SHOWS</button>
-                <button><a href="https://goo.gl/forms/1firTEmhwuppdR6G3" target="_blank">RECEIVE EMAIL</a></button>
-            </div>
-        </footer>
     </main>
 </body>
 <script src="display.js"></script>
