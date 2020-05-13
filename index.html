@@ -6,27 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Welcome to Email Pro</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <main class="container-fluid" role="main">
         <header class="row">
             <div id="top" class="col displayBox">
-                <h1><strong> WELCOME TO EMAIL PRO</strong></h1>
+                <h1><strong> WELCOME TO EMAIL PRO </strong></h1>
                 <p><em>"I send you emails, then it's your problem"</em></p>
             </div>
         </header>
         <nav class="row">
             <div class="col displayBox">
-                <button onclick="document.location = 'index.html'">EMAILS</button>
-                <button onclick="document.location = 'about.html'">ABOUT EMAIL PRO / LIVE SHOWS</button>
-                <button><a href="https://goo.gl/forms/1firTEmhwuppdR6G3" target="_blank">RECEIVE EMAIL</a></button>
+                <button onclick="document.location = 'index.html'">HOME</button>
+                <button onclick="document.location = 'about.html'">ABOUT/LIVE SHOWS</button>
+                <button><a href="https://goo.gl/forms/1firTEmhwuppdR6G3" target="_blank" style="color:black">SIGN UP FOR EMAIL PRO</a></button>
             </div>
         </nav>
         <div class="row" id="middle">
-            <div id="selectedMail" class="col-sm col-md-9 displayBox">
+            <div id="selectedMail" class="col-sm col-md-9 col-lg displayBox">
                 <h4>Subj: <em id="subj"></em></h4>
                 <h5>Date: <em id="date"></em></h5>
                 <span><button id="copyLink">copy link to this email</button></span>
@@ -41,7 +41,7 @@
                 <span><button onclick="jumpTime('forward')">></button></span>
                 <span><button onclick="jumpTime('end')">>|</button></span>
             </div>
-            <div id="archive" class="col-sm col-md-2 col-lg-2 displayBox">
+            <div id="archive" class="col-sm-3 col-md-3 col-lg-2 displayBox">
                 <span><h3>ARCHIVE</h3></span>
                 <div id="years">
                 </div>
