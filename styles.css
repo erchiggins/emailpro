@@ -1,5 +1,6 @@
 #top {
     text-align: center;
+    margin-top: 10px;
 }
 
 .displayBox {
@@ -9,12 +10,15 @@
     border-width: medium;
     color: blue;
     padding: 15px;
-    margin: 2%;
+    margin-top: 7.5px;
+    margin-bottom: 7.5px;
+    overflow-wrap: break-word;
+    justify-content: center;
 }
 
-#about>p>a,
-#contact>span>a,
-#shows>p>a {
+#about>div>p>a,
+#contact>div>span>a,
+#shows>div>p>a {
     color: #f70de3;
 }
 
@@ -31,7 +35,7 @@ main {
 }
 
 #content {
-    height: 350px;
+    height: 400px;
     line-height: 1.5em;
     overflow-x: auto;
     overflow-y: auto;
@@ -40,6 +44,14 @@ main {
     border-color: blue;
     background-color: white;
     color: black;
+}
+
+#archive>div {
+    height: 632.8px;
+}
+
+#contact>div {
+    height: 93.8%;
 }
 
 #years {
