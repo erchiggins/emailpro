@@ -102,7 +102,7 @@ function updateSelectedMail() {
     document.getElementById("subj").innerText = selectedMail.subject;
     document.getElementById("content").innerHTML = selectedMail.markdown;
     const date = new Date(parseInt(selectedMail.timestamp));
-    document.getElementById("date").innerText = `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+    document.getElementById("date").innerText = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 }
 
 function updateSelectedTopics() {
