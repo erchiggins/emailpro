@@ -77,7 +77,8 @@ function jumpTime(destination) {
 }
 
 async function fetchMailBySubject(subject) {
-    fetch(`${archiveUrl}archive/${subject}`)
+    encodedSubj = encodeURIComponent(decodeURI(subject));
+    fetch(`${archiveUrl}archive/${encodedSubj}`)
         .then(response => {
             return response.json();
         }).then(data => {
@@ -98,7 +99,7 @@ async function fetchMailBySubject(subject) {
 }
 
 function updateSelectedMail() {
-    location.hash = encodeURI(selectedMail.subject);
+    location.hash = selectedMail.subject;
     document.getElementById("subj").innerText = selectedMail.subject;
     document.getElementById("content").innerHTML = selectedMail.markdown;
     const date = new Date(parseInt(selectedMail.timestamp));
@@ -245,7 +246,7 @@ function buildTopicPanel(topic, parent) {
     newPanel.className = "panel";
     for (email of topic.emails) {
         const newPara = document.createElement("p");
-        newPara.appendChild(buildLink(`#${encodeURI(email)}`, email));
+        newPara.appendChild(buildLink(`#${email}`, email));
         newPanel.appendChild(newPara);
     }
     parent.appendChild(newPanel);
