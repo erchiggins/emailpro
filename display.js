@@ -136,7 +136,7 @@ function updateArchive() {
             // numInYear += eList.length;
             for (e in eList) {
                 timeline.push({ subject: eList[e].subject, timestamp: eList[e].timestamp });
-                const archiveLink = buildLink(`#${encodeURI(eList[e].subject)}`, `${eList[e].day} - ${eList[e].subject}`);
+                const archiveLink = buildLink(`#${encodeURI(eList[e].subject)}`, `- ${eList[e].subject}`);
                 newDiv.appendChild(archiveLink);
                 newDiv.appendChild(document.createElement("br"));
             }
@@ -246,7 +246,7 @@ function buildTopicPanel(topic, parent) {
     newPanel.className = "panel";
     for (email of topic.emails) {
         const newPara = document.createElement("p");
-        newPara.appendChild(buildLink(`#${email}`, email));
+        newPara.appendChild(buildLink(`#${email}`, `- ${email}`));
         newPanel.appendChild(newPara);
     }
     parent.appendChild(newPanel);

@@ -77,6 +77,10 @@ span>.panel>p {
     margin: 0;
 }
 
+.panel>div>a {
+    font-size: 0.85rem;
+}
+
 .active,
 .accordionButton:hover {
     background-color: darkgray;
