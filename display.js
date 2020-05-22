@@ -93,8 +93,13 @@ async function fetchMailBySubject(subject) {
             }
         }).catch(error => {
             document.title = "Welcome to Email Pro";
-            // TODO: error message
-            return null;
+            selectedMail = {
+                subject: "",
+                timestamp: "divide by zero",
+                markdown: "error"
+            }
+            updateSelectedMail();
+            updateSelectedTopics();
         });
 }
 
@@ -102,8 +107,9 @@ function updateSelectedMail() {
     location.hash = selectedMail.subject;
     document.getElementById("subj").innerText = selectedMail.subject;
     document.getElementById("content").innerHTML = selectedMail.markdown;
-    const date = new Date(parseInt(selectedMail.timestamp));
-    document.getElementById("date").innerText = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    const dateString = parseInt(selectedMail.timestamp);
+    const date = new Date(dateString);
+    document.getElementById("date").innerText = dateString ? `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}` : selectedMail.timestamp;
 }
 
 function updateSelectedTopics() {
