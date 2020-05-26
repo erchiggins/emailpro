@@ -129,7 +129,6 @@ function updateArchive() {
     for (y in archive.years) {
         archiveYear = archive.years[y];
         mList = archiveYear.months;
-        // let numInYear = 0;
         const newYear = buildArchivePanel(archiveYear.year, "");
         yearsDiv.appendChild(newYear);
         for (m in mList) {
@@ -139,16 +138,13 @@ function updateArchive() {
             const newDiv = document.createElement("div");
             newMonth.lastChild.appendChild(newDiv);
             eList = month.emails;
-            // numInYear += eList.length;
             for (e in eList) {
                 timeline.push({ subject: eList[e].subject, timestamp: eList[e].timestamp });
                 const archiveLink = buildLink(`#${encodeURI(eList[e].subject)}`, `- ${eList[e].subject}`);
                 newDiv.appendChild(archiveLink);
                 newDiv.appendChild(document.createElement("br"));
             }
-            // updatePanelCount(archiveYear.year + month.name, eList.length);
         }
-        // updatePanelCount(archiveYear.year, numInYear);
     }
 
 }
@@ -157,13 +153,8 @@ function buildArchivePanel(year, month) {
     const newPanel = document.createElement("div");
     newPanel.className = "accordion";
     const para = document.createElement("p");
-    if (month) {
-        para.id = year + month;
-    } else {
-        para.id = year;
-    }
     const button = document.createElement("button");
-    if (month) {
+    if (month || month === 0) {
         button.innerText = months[month];
     } else {
         button.innerText = year;
@@ -175,13 +166,6 @@ function buildArchivePanel(year, month) {
     panel.className = "panel";
     newPanel.appendChild(panel);
     return newPanel;
-}
-
-function updatePanelCount(id, count) {
-    const para = document.getElementById(id);
-    const span = document.createElement("span");
-    span.innerText = `  (${count})`
-    para.appendChild(span);
 }
 
 function applyAccordionListener() {
