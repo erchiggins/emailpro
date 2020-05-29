@@ -156,13 +156,16 @@ function buildArchivePanel(year, month) {
     const button = document.createElement("button");
     if (month || month === 0) {
         button.innerText = months[month];
+        button.id = `${year}-${month}`;
     } else {
         button.innerText = year;
+        button.id = `${year}`;
     }
     button.className = "accordionButton";
     para.appendChild(button);
     newPanel.appendChild(para);
     const panel = document.createElement("div");
+    panel.id = `${button.id}-panel`;
     panel.className = "panel";
     newPanel.appendChild(panel);
     return newPanel;
@@ -177,13 +180,11 @@ function applyAccordionListener() {
             this.classList.toggle("active");
 
             /* Toggle between hiding and showing the active panel */
-            var panel = acc[i].lastChild;
+            var panel = document.getElementById(`${this.id}-panel`);
             if (panel.style.display === "block") {
                 panel.style.display = "none";
-                // acc[i].firstChild.lastChild.style.display = "inline";
             } else {
                 panel.style.display = "block";
-                // acc[i].firstChild.lastChild.style.display = "none";
             }
         });
     }
@@ -221,6 +222,7 @@ function updateTopics() {
         const tButton = document.createElement("button");
         tButton.className = "accordionButton";
         tButton.innerText = t.name;
+        tButton.id = t.name;
         tbSpan.appendChild(tButton);
         tSpan.appendChild(tbSpan);
         buildTopicPanel(t, tSpan);
@@ -234,6 +236,7 @@ function updateTopics() {
 function buildTopicPanel(topic, parent) {
     const newPanel = document.createElement("div");
     newPanel.className = "panel";
+    newPanel.id = `${topic.name}-panel`;
     for (email of topic.emails) {
         const newPara = document.createElement("p");
         newPara.appendChild(buildLink(`#${email}`, `- ${email}`));
