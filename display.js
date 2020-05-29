@@ -119,6 +119,13 @@ function updateSelectedTopics() {
     for (st of sTopics) {
         const newEm = document.createElement("em");
         newEm.innerText = st.name;
+        newEm.className = 'linkalike';
+        newEm.onclick = (event) => {
+            document.getElementById(event.target.innerText).classList.add("active");
+            panel = document.getElementById(`${event.target.innerText}-panel`);
+            panel.style.display = "block";
+            panel.scrollIntoView();
+        }
         sTSpan.appendChild(newEm);
     }
 }

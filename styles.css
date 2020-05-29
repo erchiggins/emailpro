@@ -95,3 +95,8 @@ span>.panel>p {
 span>em {
     margin-left: 10px;
 }
+
+.linkalike:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
