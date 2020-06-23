@@ -77,7 +77,7 @@ function jumpTime(destination) {
 }
 
 async function fetchMailBySubject(subject) {
-    encodedSubj = encodeURIComponent(decodeURI(subject));
+    encodedSubj = encodeURI(decodeURI(subject).replace(/ /g, '+'));
     fetch(`${archiveUrl}archive/${encodedSubj}`)
         .then(response => {
             return response.json();
@@ -104,7 +104,7 @@ async function fetchMailBySubject(subject) {
 }
 
 function updateSelectedMail() {
-    location.hash = selectedMail.subject;
+    location.hash = selectedMail.subject.replace(/ /g, '+');
     document.getElementById("subj").innerText = selectedMail.subject;
     document.getElementById("content").innerHTML = selectedMail.markdown;
     const dateString = parseInt(selectedMail.timestamp);
@@ -131,7 +131,6 @@ function updateSelectedTopics() {
 }
 
 function updateArchive() {
-
     const yearsDiv = document.getElementById("years");
     for (y in archive.years) {
         archiveYear = archive.years[y];
@@ -147,7 +146,7 @@ function updateArchive() {
             eList = month.emails;
             for (e in eList) {
                 timeline.push({ subject: eList[e].subject, timestamp: eList[e].timestamp });
-                const archiveLink = buildLink(`#${encodeURI(eList[e].subject)}`, `- ${eList[e].subject}`);
+                const archiveLink = buildLink(`#${encodeURI(eList[e].subject.replace(/ /g, '+'))}`, `- ${eList[e].subject}`);
                 newDiv.appendChild(archiveLink);
                 newDiv.appendChild(document.createElement("br"));
             }
@@ -185,7 +184,6 @@ function applyAccordionListener() {
             /* Toggle between adding and removing the "active" class,
             to highlight the button that controls the panel */
             this.classList.toggle("active");
-
             /* Toggle between hiding and showing the active panel */
             var panel = document.getElementById(`${this.id}-panel`);
             if (panel.style.display === "block") {
@@ -246,7 +244,7 @@ function buildTopicPanel(topic, parent) {
     newPanel.id = `${topic.name}-panel`;
     for (email of topic.emails) {
         const newPara = document.createElement("p");
-        newPara.appendChild(buildLink(`#${email}`, `- ${email}`));
+        newPara.appendChild(buildLink(`#${email.replace(/ /g, '+')}`, `- ${email}`));
         newPanel.appendChild(newPara);
     }
     parent.appendChild(newPanel);
