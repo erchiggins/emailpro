@@ -77,7 +77,7 @@ function jumpTime(destination) {
 }
 
 async function fetchMailBySubject(subject) {
-    encodedSubj = encodeURI(decodeURI(subject).replace(/ /g, '+'));
+    encodedSubj = encodeURIComponent(decodeURI(subject).replace(/ /g, '+'));
     fetch(`${archiveUrl}archive/${encodedSubj}`)
         .then(response => {
             return response.json();
@@ -141,14 +141,15 @@ function updateArchive() {
             month = mList[m];
             const newMonth = buildArchivePanel(archiveYear.year, month.month);
             newYear.lastChild.appendChild(newMonth);
-            const newDiv = document.createElement("div");
+            const newDiv = document.createElement("ul");
             newMonth.lastChild.appendChild(newDiv);
             eList = month.emails;
             for (e in eList) {
                 timeline.push({ subject: eList[e].subject, timestamp: eList[e].timestamp });
-                const archiveLink = buildLink(`#${encodeURI(eList[e].subject.replace(/ /g, '+'))}`, `- ${eList[e].subject}`);
-                newDiv.appendChild(archiveLink);
-                newDiv.appendChild(document.createElement("br"));
+                const archiveListItem = document.createElement("li");
+                const archiveLink = buildLink(`#${encodeURI(eList[e].subject.replace(/ /g, '+'))}`, eList[e].subject);
+                newDiv.appendChild(archiveListItem);
+                archiveListItem.appendChild(archiveLink);
             }
         }
     }
@@ -239,13 +240,13 @@ function updateTopics() {
 }
 
 function buildTopicPanel(topic, parent) {
-    const newPanel = document.createElement("div");
+    const newPanel = document.createElement("ul");
     newPanel.className = "panel";
     newPanel.id = `${topic.name}-panel`;
     for (email of topic.emails) {
-        const newPara = document.createElement("p");
-        newPara.appendChild(buildLink(`#${email.replace(/ /g, '+')}`, `- ${email}`));
-        newPanel.appendChild(newPara);
+        const newTopicItem = document.createElement("li");
+        newTopicItem.appendChild(buildLink(`#${email.replace(/ /g, '+')}`, email));
+        newPanel.appendChild(newTopicItem);
     }
     parent.appendChild(newPanel);
 }
